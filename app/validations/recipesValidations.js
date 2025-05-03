@@ -5,7 +5,7 @@ const createRecipeValidation = Joi.object({
   ingredients: Joi.array().items(Joi.string()).min(1).required(),
   instructions: Joi.string().min(10).required(),
   cookingTime: Joi.number().integer().min(1).required(),
-  coverImage: Joi.string().uri().required(),
+  coverImage: Joi.string().uri().optional(),
 });
 
 const updateRecipeValidation = Joi.object({
@@ -14,7 +14,7 @@ const updateRecipeValidation = Joi.object({
   ingredients: Joi.array().items(Joi.string()).min(1).required(),
   instructions: Joi.string().min(10).required(),
   cookingTime: Joi.number().integer().min(1).required(),
-  coverImage: Joi.string().uri().required(),
+  coverImage: Joi.string().uri().optional(),
 });
 
 const getRecipeByIdValidation = Joi.object({
