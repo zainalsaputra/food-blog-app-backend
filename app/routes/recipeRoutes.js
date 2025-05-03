@@ -5,27 +5,12 @@ const recipesController = require("../controllers/recipesController.js");
 
 router.get("/", recipesController.getAllRecipes);
 
-router.get("/:id", (req, res) => {
-  const recipeId = req.params.id;
-  res.send(`Recipe ID: ${recipeId}`);
-});
+router.get("/:id", recipesController.getRecipeById);
 
 router.post("/", recipesController.createRecipe);
 
-router.put("/:id", (req, res) => {
-  const recipeId = req.params.id;
-  const updatedRecipe = req.body;
-  res.json({
-    message: `Recipe ID: ${recipeId} updated successfully!`,
-    recipe: updatedRecipe,
-  });
-});
+router.put("/:id", recipesController.updateRecipe);
 
-router.delete("/:id", (req, res) => {
-  const recipeId = req.params.id;
-  res.json({
-    message: `Recipe ID: ${recipeId} deleted successfully!`,
-  });
-});
+router.delete("/:id", recipesController.deleteRecipe);
 
 module.exports = router;

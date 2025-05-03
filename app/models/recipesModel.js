@@ -19,7 +19,7 @@ const recipeSchema = new mongoose.Schema(
       required: true,
     },
     coverImage: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

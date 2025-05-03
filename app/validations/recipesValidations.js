@@ -8,4 +8,21 @@ const createRecipeValidation = Joi.object({
   coverImage: Joi.string().uri().required(),
 });
 
-module.exports = { createRecipeValidation };
+const updateRecipeValidation = Joi.object({
+  id: Joi.string().required(),
+  title: Joi.string().min(3).max(100).required(),
+  ingredients: Joi.array().items(Joi.string()).min(1).required(),
+  instructions: Joi.string().min(10).required(),
+  cookingTime: Joi.number().integer().min(1).required(),
+  coverImage: Joi.string().uri().required(),
+});
+
+const getRecipeByIdValidation = Joi.object({
+  id: Joi.string().required(),
+});
+
+module.exports = {
+  createRecipeValidation,
+  updateRecipeValidation,
+  getRecipeByIdValidation,
+};
