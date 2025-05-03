@@ -10,13 +10,7 @@ router.get("/:id", (req, res) => {
   res.send(`Recipe ID: ${recipeId}`);
 });
 
-router.post("/", (req, res) => {
-  const newRecipe = req.body;
-  res.status(201).json({
-    message: "Recipe created successfully!",
-    recipe: newRecipe,
-  });
-});
+router.post("/", recipesController.createRecipe);
 
 router.put("/:id", (req, res) => {
   const recipeId = req.params.id;
