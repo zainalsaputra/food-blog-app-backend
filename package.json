@@ -1,0 +1,35 @@
+{
+  "name": "food-blog-app-back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon app/server.js",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zainalsaputra/food-blog-app-backend.git"
+  },
+  "author": "zainal saputra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zainalsaputra/food-blog-app-backend/issues"
+  },
+  "homepage": "https://github.com/zainalsaputra/food-blog-app-backend#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.14.1",
+    "prettier": "^3.5.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.10"
+  }
+}
