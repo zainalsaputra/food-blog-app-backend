@@ -100,9 +100,9 @@ class recipesController {
           return next(createError(400, '"ingredients" must be a valid array'));
         }
       }
-  
+
       const recipeId = req.params.id;
-  
+
       const { error } = updateRecipeValidation.validate({
         id: recipeId,
         ...req.body,
@@ -115,11 +115,11 @@ class recipesController {
         }
         return next(createError(400, error.details[0].message));
       }
-  
+
       const updateData = {
         ...req.body,
       };
-  
+
       const existingRecipe = await Recipe.findById(recipeId);
       if (!existingRecipe) {
         if (req.file) {
@@ -129,23 +129,31 @@ class recipesController {
         }
         return next(createError(404, "Recipe not found"));
       }
-  
+
       if (req.file) {
         updateData.coverImage = req.file.filename;
-  
+
         if (existingRecipe.coverImage) {
-          const oldImagePath = path.join(__dirname, "../../uploads", existingRecipe.coverImage);
+          const oldImagePath = path.join(
+            __dirname,
+            "../../uploads",
+            existingRecipe.coverImage,
+          );
           fs.unlink(oldImagePath, (err) => {
             if (err) console.error("Failed to delete old image:", err);
           });
         }
       }
-  
-      const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updateData, {
-        new: true,
-        runValidators: true,
-      });
-  
+
+      const updatedRecipe = await Recipe.findByIdAndUpdate(
+        recipeId,
+        updateData,
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
+
       res.status(200).json({
         status: "success",
         message: "Recipe updated successfully!",
@@ -164,19 +172,23 @@ class recipesController {
   static async deleteRecipe(req, res, next) {
     try {
       const recipeId = req.params.id;
-  
+
       const { error } = getRecipeByIdValidation.validate({ id: recipeId });
       if (error) {
         return next(createError(400, error.details[0].message));
       }
-  
+
       const existingRecipe = await Recipe.findById(recipeId);
       if (!existingRecipe) {
         return next(createError(404, "Recipe not found"));
       }
-  
+
       if (existingRecipe.coverImage) {
-        const imagePath = path.join(__dirname, "../../uploads", existingRecipe.coverImage);
+        const imagePath = path.join(
+          __dirname,
+          "../../uploads",
+          existingRecipe.coverImage,
+        );
         fs.access(imagePath, fs.constants.F_OK, (err) => {
           if (!err) {
             fs.unlink(imagePath, (err) => {
@@ -189,7 +201,7 @@ class recipesController {
       }
 
       await Recipe.findByIdAndDelete(recipeId);
-  
+
       res.status(200).json({
         status: "success",
         message: "Recipe deleted successfully!",
@@ -198,8 +210,6 @@ class recipesController {
       next(error);
     }
   }
-  
-
 }
 
 module.exports = recipesController;
