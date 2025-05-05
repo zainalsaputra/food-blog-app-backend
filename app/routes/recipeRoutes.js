@@ -1,39 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const imageUploader = require("../middlewares/imageUploader.js");
-const recipesController = require("../controllers/recipesController.js");
+const bindControllerMethods = require("../utils/bindControllerMethods.js");
+const imageUploadMiddleware = require("../middlewares/imageUploader.js");
+const RecipesController = require("../controllers/recipesController.js");
+const recipeSchema = require("../models/recipesModel");
 
-router.get("/", recipesController.getAllRecipes);
+const recipeController = bindControllerMethods(new RecipesController(recipeSchema));
 
-router.get("/:id", recipesController.getRecipeById);
 
-router.post(
-  "/",
-  (req, res, next) => {
-    imageUploader.single("coverImage")(req, res, (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-      next();
-    });
-  },
-  recipesController.createRecipe,
-);
-
-router.put(
-  "/:id",
-  (req, res, next) => {
-    imageUploader.single("coverImage")(req, res, (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-      next();
-    });
-  },
-  recipesController.updateRecipe,
-);
-
-router.delete("/:id", recipesController.deleteRecipe);
+router.get("/", recipeController.getAllRecipes);
+router.get("/:id", recipeController.getRecipeById);
+router.post("/", imageUploadMiddleware, recipeController.createRecipe);
+router.put("/:id", imageUploadMiddleware, recipeController.updateRecipe);
+router.delete("/:id", recipeController.deleteRecipe);
 
 module.exports = router;
