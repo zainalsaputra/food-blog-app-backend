@@ -48,7 +48,6 @@ class UsersController {
         message: "User registered successfully",
         data: newUser,
       });
-
     } catch (error) {
       next(error);
     }
@@ -84,20 +83,20 @@ class UsersController {
         accessToken: token,
       });
     } catch (error) {
-      res.status(401).json({ error: error.message });
+      next(error);
     }
   }
 
   async getUserById(req, res) {
     try {
       const { id } = req.params;
-      const user = await this.userService.getUserById(id);
+      const user = await this.userService.findById(id);
       if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return next(createError(404, "User not found"));
       }
       res.status(200).json(user);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   }
 }

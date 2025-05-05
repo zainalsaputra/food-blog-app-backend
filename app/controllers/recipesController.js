@@ -6,12 +6,16 @@ const {
   updateRecipeValidation,
   getRecipeByIdValidation,
 } = require("../validations/recipesValidations");
-const Recipe = require("../models/recipesModel");
 
-class recipesController {
-  static async getAllRecipes(req, res) {
+class RecipesController {
+
+  constructor(recipeService) {
+    this.recipeService = recipeService;
+  }
+
+  async getAllRecipes(req, res) {
     try {
-      const recipes = await Recipe.find();
+      const recipes = await this.recipeService.find();
       if (!recipes) {
         return next(createError(404, "No recipes found"));
       }
@@ -21,7 +25,7 @@ class recipesController {
     }
   }
 
-  static async createRecipe(req, res, next) {
+  async createRecipe(req, res, next) {
     try {
       if (typeof req.body.ingredients === "string") {
         try {
@@ -44,7 +48,7 @@ class recipesController {
       }
       const { title, ingredients, instructions, cookingTime } = req.body;
       const coverImage = req.file?.filename || null;
-      const newRecipe = await Recipe.create({
+      const newRecipe = await this.recipeService.create({
         title,
         ingredients,
         instructions,
@@ -69,14 +73,14 @@ class recipesController {
     }
   }
 
-  static async getRecipeById(req, res, next) {
+  async getRecipeById(req, res, next) {
     try {
       const recipeId = req.params.id;
       const { error } = getRecipeByIdValidation.validate(req.params);
       if (error) {
         return next(createError(400, error.details[0].message));
       }
-      const recipe = await Recipe.findById(recipeId);
+      const recipe = await this.recipeService.findById(recipeId);
       if (!recipe) {
         return next(createError(404, "Recipe not found"));
       }
@@ -91,7 +95,7 @@ class recipesController {
     }
   }
 
-  static async updateRecipe(req, res, next) {
+  async updateRecipe(req, res, next) {
     try {
       if (typeof req.body.ingredients === "string") {
         try {
@@ -120,7 +124,7 @@ class recipesController {
         ...req.body,
       };
 
-      const existingRecipe = await Recipe.findById(recipeId);
+      const existingRecipe = await this.recipeService.findById(recipeId);
       if (!existingRecipe) {
         if (req.file) {
           fs.unlink(req.file.path, (err) => {
@@ -145,7 +149,7 @@ class recipesController {
         }
       }
 
-      const updatedRecipe = await Recipe.findByIdAndUpdate(
+      const updatedRecipe = await this.recipeService.findByIdAndUpdate(
         recipeId,
         updateData,
         {
@@ -169,7 +173,7 @@ class recipesController {
     }
   }
 
-  static async deleteRecipe(req, res, next) {
+  async deleteRecipe(req, res, next) {
     try {
       const recipeId = req.params.id;
 
@@ -178,7 +182,7 @@ class recipesController {
         return next(createError(400, error.details[0].message));
       }
 
-      const existingRecipe = await Recipe.findById(recipeId);
+      const existingRecipe = await this.recipeService.findById(recipeId);
       if (!existingRecipe) {
         return next(createError(404, "Recipe not found"));
       }
@@ -200,7 +204,7 @@ class recipesController {
         });
       }
 
-      await Recipe.findByIdAndDelete(recipeId);
+      await this.recipeService.findByIdAndDelete(recipeId);
 
       res.status(200).json({
         status: "success",
@@ -212,4 +216,4 @@ class recipesController {
   }
 }
 
-module.exports = recipesController;
+module.exports = RecipesController;

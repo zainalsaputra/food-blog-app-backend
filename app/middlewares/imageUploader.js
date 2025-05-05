@@ -38,4 +38,15 @@ const imageUploader = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-module.exports = imageUploader;
+const handleImageUpload = imageUploader.single("coverImage");
+
+const imageUploadMiddleware = (req, res, next) => {
+  handleImageUpload(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+};
+
+module.exports = imageUploadMiddleware;
